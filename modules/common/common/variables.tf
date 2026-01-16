@@ -4,6 +4,13 @@ variable "resource_group_name" {
   type        = string
 }
 
+variable "existing_resource_group_name" {
+  description = "Azure Resource Group name to use if using an existing resource group; empty string creates resource_group_name rg"
+  type        = string
+  default     = ""
+  
+}
+
 variable "resource_group_id" {
   description = "Azure Resource Group ID to use."
   type        = string

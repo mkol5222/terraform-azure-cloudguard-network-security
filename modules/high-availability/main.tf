@@ -2,6 +2,8 @@
 module "common" {
   source                         = "../common/common"
   resource_group_name            = var.resource_group_name
+  # MKO - allow use of existing resource group
+  existing_resource_group_name   = var.existing_resource_group_name
   location                       = var.location
   is_zonal                       = var.availability_type == "Availability Zone"
   availability_zones_num         = tostring(length(var.availability_zones))

@@ -24,6 +24,13 @@ variable "resource_group_name" {
   type        = string
 }
 
+# MKO - allow use of existing resource group
+variable "existing_resource_group_name" {
+  description = "Azure Resource Group name to use if using an existing resource group; empty string creates resource_group_name rg"
+  type        = string
+  default     = ""
+}
+
 variable "cluster_name" {
   description = "Cluster name."
   type        = string
