@@ -25,10 +25,10 @@ variable "resource_group_name" {
 }
 
 # MKO - allow use of existing resource group
-variable "existing_resource_group_name" {
-  description = "Azure Resource Group name to use if using an existing resource group; empty string creates resource_group_name rg"
-  type        = string
-  default     = ""
+variable "resource_group_create" {
+  description = "Define if Azure Resource Group should be created"
+  type        = bool
+  default     = true
 }
 
 variable "cluster_name" {
