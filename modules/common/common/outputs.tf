@@ -15,7 +15,7 @@ output "resource_group_location" {
 }
 
 output "azurerm_resource_group_id" {
-  value = azurerm_resource_group.resource_group.id
+  value = local.rg_used.id
 }
 
 output "admin_username" {
