@@ -1,5 +1,5 @@
-local {
-  rg_used = var.existing_resource_group_name != "" ? data.azurerm_resource_group.existing_resource_group[0] : azurerm_resource_group.resource_group
+locals {
+  rg_used = var.existing_resource_group_name != "" ? data.azurerm_resource_group.existing_resource_group[0] : azurerm_resource_group.resource_group[0]
 }
 
 output "resource_group_name" {
