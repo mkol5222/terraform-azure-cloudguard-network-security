@@ -1,13 +1,17 @@
+local {
+  rg_used = var.existing_resource_group_name != "" ? data.azurerm_resource_group.existing_resource_group[0] : azurerm_resource_group.resource_group
+}
+
 output "resource_group_name" {
-  value = azurerm_resource_group.resource_group.name
+  value = local.rg_used.name
 }
 
 output "resource_group_id" {
-  value = azurerm_resource_group.resource_group.id
+  value = local.rg_used.id
 }
 
 output "resource_group_location" {
-  value = azurerm_resource_group.resource_group.location
+  value = local.rg_used.location
 }
 
 output "azurerm_resource_group_id" {
