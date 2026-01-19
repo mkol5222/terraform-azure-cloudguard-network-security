@@ -1,6 +1,6 @@
 resource "azurerm_resource_group" "resource_group" {
   # MKO - allow use of existing resource group
-  count = var.existing_resource_group_name == "" ? 1 : 0
+  count    = var.resource_group_create ? 1 : 0
   name     = var.resource_group_name
   location = var.location
   tags     = var.tags
@@ -8,8 +8,8 @@ resource "azurerm_resource_group" "resource_group" {
 
 data "azurerm_resource_group" "existing_resource_group" {
   # MKO - allow use of existing resource group
-  count = var.existing_resource_group_name != "" ? 1 : 0
-  name = var.existing_resource_group_name
+  count    = var.resource_group_create ? 0 : 1
+  name = var.resource_group_name
 }
 
 module "regions" {

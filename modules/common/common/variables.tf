@@ -17,6 +17,12 @@ variable "resource_group_id" {
   default     = ""
 }
 
+variable "resource_group_create" {
+  description = "Define if Azure Resource Group should be created"
+  type        = bool
+  default     = true
+}
+
 variable "location" {
   description = "The location/region where resources will be created. The full list of Azure regions can be found at https://azure.microsoft.com/regions"
   type        = string
