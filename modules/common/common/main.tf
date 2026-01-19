@@ -1,4 +1,4 @@
-resource "azurerm_resource_group" "resource_group" {
+resource "azurerm_resource_group" "this" {
   # MKO - allow use of existing resource group
   count    = var.resource_group_create ? 1 : 0
   name     = var.resource_group_name
@@ -6,7 +6,7 @@ resource "azurerm_resource_group" "resource_group" {
   tags     = var.tags
 }
 
-data "azurerm_resource_group" "existing_resource_group" {
+data "azurerm_resource_group" "this" {
   # MKO - allow use of existing resource group
   count    = var.resource_group_create ? 0 : 1
   name = var.resource_group_name
