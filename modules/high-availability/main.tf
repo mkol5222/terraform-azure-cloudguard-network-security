@@ -244,18 +244,18 @@ resource "azurerm_network_interface_backend_address_pool_association" "nic1_lb_a
 
 //********************** Load Balancers **************************//
 resource "azurerm_public_ip" "public_ip_lb" {
-  name                = "frontend_lb_ip"
+  name                = "${var.cluster_prefix}frontend_lb_ip"
   location            = module.common.resource_group_location
   resource_group_name = module.common.resource_group_name
   allocation_method   = module.vnet.allocation_method
   sku                 = var.sku
-  domain_name_label   = "${lower(var.cluster_name)}-${random_id.random_id.hex}"
+  domain_name_label   = "${var.cluster_prefix}${lower(var.cluster_name)}-${random_id.random_id.hex}"
   public_ip_prefix_id = var.use_public_ip_prefix ? (var.create_public_ip_prefix ? azurerm_public_ip_prefix.public_ip_prefix[0].id : var.existing_public_ip_prefix_id) : null
   tags                = merge(lookup(var.tags, "public-ip", {}), lookup(var.tags, "all", {}))
 }
 
 resource "azurerm_lb" "frontend_lb" {
-  name                = "frontend-lb"
+  name                = "${var.cluster_prefix}frontend-lb"
   location            = module.common.resource_group_location
   resource_group_name = module.common.resource_group_name
   sku                 = var.sku
@@ -274,7 +274,7 @@ resource "azurerm_lb_backend_address_pool" "frontend_lb_pool" {
 }
 
 resource "azurerm_lb" "backend_lb" {
-  name                = "${var.cluster_prefix}backend-lb"
+  name                = "${var.cluster_prefix}ackend-lb"
   location            = module.common.resource_group_location
   resource_group_name = module.common.resource_group_name
   sku                 = var.sku
