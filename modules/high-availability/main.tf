@@ -270,7 +270,7 @@ resource "azurerm_lb" "frontend_lb" {
 
 resource "azurerm_lb_backend_address_pool" "frontend_lb_pool" {
   loadbalancer_id = azurerm_lb.frontend_lb.id
-  name            = "frontend-lb-pool"
+  name            = "${var.cluster_prefix}frontend-lb-pool"
 }
 
 resource "azurerm_lb" "backend_lb" {
