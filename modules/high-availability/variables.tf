@@ -1,3 +1,9 @@
+/// MKO - cluster prefix to allow deployment of multiple clusters in same resource group
+variable "cluster_prefix" {
+  description = "Prefix to be added to resources names."
+  type        = string
+  default = ""
+}
 //********************** Basic Configuration Variables **************************//
 variable "subscription_id" {
   description = "Subscription ID"

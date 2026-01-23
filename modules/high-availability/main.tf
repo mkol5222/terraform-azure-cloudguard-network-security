@@ -73,12 +73,12 @@ resource "azurerm_public_ip_prefix" "public_ip_prefix" {
 
 resource "azurerm_public_ip" "public_ip" {
   count               = 2
-  name                = "${var.cluster_name}${count.index + 1}_IP"
+  name                = "${var.cluster_prefix}${var.cluster_name}${count.index + 1}_IP"
   location            = module.common.resource_group_location
   resource_group_name = module.common.resource_group_name
   allocation_method   = module.vnet.allocation_method
   sku                 = var.sku
-  domain_name_label   = "${lower(var.cluster_name)}-${count.index + 1}-${random_id.random_id.hex}"
+  domain_name_label   = "${var.cluster_prefix}${lower(var.cluster_name)}-${count.index + 1}-${random_id.random_id.hex}"
   public_ip_prefix_id = var.use_public_ip_prefix ? (var.create_public_ip_prefix ? azurerm_public_ip_prefix.public_ip_prefix[0].id : var.existing_public_ip_prefix_id) : null
   tags                = merge(lookup(var.tags, "public-ip", {}), lookup(var.tags, "all", {}))
 }
@@ -274,7 +274,7 @@ resource "azurerm_lb_backend_address_pool" "frontend_lb_pool" {
 }
 
 resource "azurerm_lb" "backend_lb" {
-  name                = "backend-lb"
+  name                = "${var.cluster_prefix}backend-lb"
   location            = module.common.resource_group_location
   resource_group_name = module.common.resource_group_name
   sku                 = var.sku
