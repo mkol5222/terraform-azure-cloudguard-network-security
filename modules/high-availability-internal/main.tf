@@ -159,15 +159,15 @@ resource "azurerm_network_interface" "nic_vip" {
   tags = merge(lookup(var.tags, "network-interface", {}), lookup(var.tags, "all", {}))
 }
 
-resource "azurerm_network_interface_backend_address_pool_association" "nic_vip_lb_association" {
-  depends_on = [
-    azurerm_network_interface.nic_vip,
-    azurerm_lb_backend_address_pool.frontend_lb_pool
-  ]
-  network_interface_id    = azurerm_network_interface.nic_vip.id
-  ip_configuration_name   = "ipconfig1"
-  backend_address_pool_id = azurerm_lb_backend_address_pool.frontend_lb_pool.id
-}
+# resource "azurerm_network_interface_backend_address_pool_association" "nic_vip_lb_association" {
+#   depends_on = [
+#     azurerm_network_interface.nic_vip,
+#     azurerm_lb_backend_address_pool.frontend_lb_pool
+#   ]
+#   network_interface_id    = azurerm_network_interface.nic_vip.id
+#   ip_configuration_name   = "ipconfig1"
+#   backend_address_pool_id = azurerm_lb_backend_address_pool.frontend_lb_pool.id
+# }
 
 resource "azurerm_network_interface" "nic" {
   # depends_on = [
@@ -200,15 +200,15 @@ resource "azurerm_network_interface" "nic" {
   tags = merge(lookup(var.tags, "network-interface", {}), lookup(var.tags, "all", {}))
 }
 
-resource "azurerm_network_interface_backend_address_pool_association" "nic_lb_association" {
-  depends_on = [
-    azurerm_network_interface.nic,
-    azurerm_lb_backend_address_pool.frontend_lb_pool
-  ]
-  network_interface_id    = azurerm_network_interface.nic.id
-  ip_configuration_name   = "ipconfig1"
-  backend_address_pool_id = azurerm_lb_backend_address_pool.frontend_lb_pool.id
-}
+# resource "azurerm_network_interface_backend_address_pool_association" "nic_lb_association" {
+#   depends_on = [
+#     azurerm_network_interface.nic,
+#     azurerm_lb_backend_address_pool.frontend_lb_pool
+#   ]
+#   network_interface_id    = azurerm_network_interface.nic.id
+#   ip_configuration_name   = "ipconfig1"
+#   backend_address_pool_id = azurerm_lb_backend_address_pool.frontend_lb_pool.id
+# }
 
 resource "azurerm_network_interface" "nic1" {
   depends_on = [
