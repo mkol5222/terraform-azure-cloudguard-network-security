@@ -186,7 +186,7 @@ resource "azurerm_network_interface" "nic" {
     subnet_id                     = module.vnet.subnets[0]
     private_ip_address_allocation = module.vnet.allocation_method
     private_ip_address            = cidrhost(module.vnet.subnet_prefixes[0], 6)
-    public_ip_address_id          = azurerm_public_ip.public_ip.1.id
+    // public_ip_address_id          = azurerm_public_ip.public_ip.1.id
   }
 
   lifecycle {
@@ -269,10 +269,10 @@ resource "azurerm_network_interface_backend_address_pool_association" "nic1_lb_a
 #   tags = merge(lookup(var.tags, "load-balancer", {}), lookup(var.tags, "all", {}))
 # }
 
-resource "azurerm_lb_backend_address_pool" "frontend_lb_pool" {
-  loadbalancer_id = azurerm_lb.frontend_lb.id
-  name            = "${var.cluster_prefix}frontend-lb-pool"
-}
+# resource "azurerm_lb_backend_address_pool" "frontend_lb_pool" {
+#   loadbalancer_id = azurerm_lb.frontend_lb.id
+#   name            = "${var.cluster_prefix}frontend-lb-pool"
+# }
 
 resource "azurerm_lb" "backend_lb" {
   name                = "${var.cluster_prefix}ackend-lb"
@@ -296,8 +296,9 @@ resource "azurerm_lb_backend_address_pool" "backend_lb_pool" {
 }
 
 resource "azurerm_lb_probe" "azure_lb_healprob" {
-  count               = 2
-  loadbalancer_id     = count.index == 0 ? azurerm_lb.frontend_lb.id : azurerm_lb.backend_lb.id
+  # count               = 2
+  # loadbalancer_id     = count.index == 0 ? azurerm_lb.frontend_lb.id : azurerm_lb.backend_lb.id
+  loadbalancer_id = azurerm_lb.backend_lb.id
   name                = var.lb_probe_name
   protocol            = var.lb_probe_protocol
   port                = var.lb_probe_port
@@ -314,7 +315,7 @@ resource "azurerm_lb_rule" "backend_lb_rules" {
   frontend_ip_configuration_name = "backend-lb"
   load_distribution              = "Default"
   backend_address_pool_ids       = [azurerm_lb_backend_address_pool.backend_lb_pool.id]
-  probe_id                       = azurerm_lb_probe.azure_lb_healprob[1].id
+  probe_id                       = azurerm_lb_probe.azure_lb_healprob.id
   enable_floating_ip             = var.enable_floating_ip
 }
 
