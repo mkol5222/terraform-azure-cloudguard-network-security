@@ -71,47 +71,47 @@ resource "azurerm_public_ip_prefix" "public_ip_prefix" {
   tags                = merge(lookup(var.tags, "public-ip-prefix", {}), lookup(var.tags, "all", {}))
 }
 
-resource "azurerm_public_ip" "public_ip" {
-  count               = 2
-  name                = "${var.cluster_prefix}${var.cluster_name}${count.index + 1}_IP"
-  location            = module.common.resource_group_location
-  resource_group_name = module.common.resource_group_name
-  allocation_method   = module.vnet.allocation_method
-  sku                 = var.sku
-  domain_name_label   = "${var.cluster_prefix}${lower(var.cluster_name)}-${count.index + 1}-${random_id.random_id.hex}"
-  public_ip_prefix_id = var.use_public_ip_prefix ? (var.create_public_ip_prefix ? azurerm_public_ip_prefix.public_ip_prefix[0].id : var.existing_public_ip_prefix_id) : null
-  tags                = merge(lookup(var.tags, "public-ip", {}), lookup(var.tags, "all", {}))
-}
+# resource "azurerm_public_ip" "public_ip" {
+#   count               = 2
+#   name                = "${var.cluster_prefix}${var.cluster_name}${count.index + 1}_IP"
+#   location            = module.common.resource_group_location
+#   resource_group_name = module.common.resource_group_name
+#   allocation_method   = module.vnet.allocation_method
+#   sku                 = var.sku
+#   domain_name_label   = "${var.cluster_prefix}${lower(var.cluster_name)}-${count.index + 1}-${random_id.random_id.hex}"
+#   public_ip_prefix_id = var.use_public_ip_prefix ? (var.create_public_ip_prefix ? azurerm_public_ip_prefix.public_ip_prefix[0].id : var.existing_public_ip_prefix_id) : null
+#   tags                = merge(lookup(var.tags, "public-ip", {}), lookup(var.tags, "all", {}))
+# }
 
-resource "azurerm_public_ip" "cluster_vip" {
-  name                = var.cluster_name
-  location            = module.common.resource_group_location
-  resource_group_name = module.common.resource_group_name
-  allocation_method   = module.vnet.allocation_method
-  sku                 = var.sku
-  domain_name_label   = "${lower(var.cluster_name)}-vip-${random_id.random_id.hex}"
-  public_ip_prefix_id = var.use_public_ip_prefix ? (var.create_public_ip_prefix ? azurerm_public_ip_prefix.public_ip_prefix[0].id : var.existing_public_ip_prefix_id) : null
-  tags                = merge(lookup(var.tags, "public-ip", {}), lookup(var.tags, "all", {}))
-}
+# resource "azurerm_public_ip" "cluster_vip" {
+#   name                = var.cluster_name
+#   location            = module.common.resource_group_location
+#   resource_group_name = module.common.resource_group_name
+#   allocation_method   = module.vnet.allocation_method
+#   sku                 = var.sku
+#   domain_name_label   = "${lower(var.cluster_name)}-vip-${random_id.random_id.hex}"
+#   public_ip_prefix_id = var.use_public_ip_prefix ? (var.create_public_ip_prefix ? azurerm_public_ip_prefix.public_ip_prefix[0].id : var.existing_public_ip_prefix_id) : null
+#   tags                = merge(lookup(var.tags, "public-ip", {}), lookup(var.tags, "all", {}))
+# }
 
-resource "azurerm_public_ip" "vips" {
-  count               = length(var.vips_names)
-  name                = var.vips_names[count.index]
-  location            = module.common.resource_group_location
-  resource_group_name = module.common.resource_group_name
-  allocation_method   = module.vnet.allocation_method
-  sku                 = var.sku
-  domain_name_label   = "${lower(var.vips_names[count.index])}-${count.index}-vip-${random_id.random_id.hex}"
-  public_ip_prefix_id = var.use_public_ip_prefix ? (var.create_public_ip_prefix ? azurerm_public_ip_prefix.public_ip_prefix[0].id : var.existing_public_ip_prefix_id) : null
-  tags                = merge(lookup(var.tags, "public-ip", {}), lookup(var.tags, "all", {}))
-}
+# resource "azurerm_public_ip" "vips" {
+#   count               = length(var.vips_names)
+#   name                = var.vips_names[count.index]
+#   location            = module.common.resource_group_location
+#   resource_group_name = module.common.resource_group_name
+#   allocation_method   = module.vnet.allocation_method
+#   sku                 = var.sku
+#   domain_name_label   = "${lower(var.vips_names[count.index])}-${count.index}-vip-${random_id.random_id.hex}"
+#   public_ip_prefix_id = var.use_public_ip_prefix ? (var.create_public_ip_prefix ? azurerm_public_ip_prefix.public_ip_prefix[0].id : var.existing_public_ip_prefix_id) : null
+#   tags                = merge(lookup(var.tags, "public-ip", {}), lookup(var.tags, "all", {}))
+# }
 
 resource "azurerm_network_interface" "nic_vip" {
-  depends_on = [
-    azurerm_public_ip.cluster_vip,
-    azurerm_public_ip.public_ip,
-    azurerm_public_ip.vips,
-  ]
+  # depends_on = [
+  #   azurerm_public_ip.cluster_vip,
+  #   azurerm_public_ip.public_ip,
+  #   azurerm_public_ip.vips,
+  # ]
   name                          = "${var.cluster_name}1-eth0"
   location                      = module.common.resource_group_location
   resource_group_name           = module.common.resource_group_name
@@ -124,7 +124,7 @@ resource "azurerm_network_interface" "nic_vip" {
     subnet_id                     = module.vnet.subnets[0]
     private_ip_address_allocation = module.vnet.allocation_method
     private_ip_address            = cidrhost(module.vnet.subnet_prefixes[0], 5)
-    public_ip_address_id          = azurerm_public_ip.public_ip.0.id
+    // public_ip_address_id          = azurerm_public_ip.public_ip.0.id
   }
 
   ip_configuration {
@@ -133,7 +133,7 @@ resource "azurerm_network_interface" "nic_vip" {
     primary                       = false
     private_ip_address_allocation = module.vnet.allocation_method
     private_ip_address            = cidrhost(module.vnet.subnet_prefixes[0], 7)
-    public_ip_address_id          = azurerm_public_ip.cluster_vip.id
+    // public_ip_address_id          = azurerm_public_ip.cluster_vip.id
   }
 
   dynamic "ip_configuration" {
@@ -144,7 +144,7 @@ resource "azurerm_network_interface" "nic_vip" {
       primary                       = false
       private_ip_address_allocation = module.vnet.allocation_method
       private_ip_address            = cidrhost(module.vnet.subnet_prefixes[0], 7 + index(var.vips_names, ip_configuration.value) + 1)
-      public_ip_address_id          = azurerm_public_ip.vips[index(var.vips_names, ip_configuration.value)].id
+      // public_ip_address_id          = azurerm_public_ip.vips[index(var.vips_names, ip_configuration.value)].id
     }
   }
 
@@ -170,10 +170,10 @@ resource "azurerm_network_interface_backend_address_pool_association" "nic_vip_l
 }
 
 resource "azurerm_network_interface" "nic" {
-  depends_on = [
-    azurerm_public_ip.public_ip,
-    azurerm_lb.frontend_lb
-  ]
+  # depends_on = [
+  #   azurerm_public_ip.public_ip,
+  #   azurerm_lb.frontend_lb
+  # ]
   name                          = "${var.cluster_name}2-eth0"
   location                      = module.common.resource_group_location
   resource_group_name           = module.common.resource_group_name
@@ -243,31 +243,31 @@ resource "azurerm_network_interface_backend_address_pool_association" "nic1_lb_a
 }
 
 //********************** Load Balancers **************************//
-resource "azurerm_public_ip" "public_ip_lb" {
+# resource "azurerm_public_ip" "public_ip_lb" {
   
-  name                = "${var.cluster_prefix}frontend_lb_ip"
-  location            = module.common.resource_group_location
-  resource_group_name = module.common.resource_group_name
-  allocation_method   = module.vnet.allocation_method
-  sku                 = var.sku
-  domain_name_label   = "${var.cluster_prefix}${lower(var.cluster_name)}-${random_id.random_id.hex}"
-  public_ip_prefix_id = var.use_public_ip_prefix ? (var.create_public_ip_prefix ? azurerm_public_ip_prefix.public_ip_prefix[0].id : var.existing_public_ip_prefix_id) : null
-  tags                = merge(lookup(var.tags, "public-ip", {}), lookup(var.tags, "all", {}))
-}
+#   name                = "${var.cluster_prefix}frontend_lb_ip"
+#   location            = module.common.resource_group_location
+#   resource_group_name = module.common.resource_group_name
+#   allocation_method   = module.vnet.allocation_method
+#   sku                 = var.sku
+#   domain_name_label   = "${var.cluster_prefix}${lower(var.cluster_name)}-${random_id.random_id.hex}"
+#   public_ip_prefix_id = var.use_public_ip_prefix ? (var.create_public_ip_prefix ? azurerm_public_ip_prefix.public_ip_prefix[0].id : var.existing_public_ip_prefix_id) : null
+#   tags                = merge(lookup(var.tags, "public-ip", {}), lookup(var.tags, "all", {}))
+# }
 
-resource "azurerm_lb" "frontend_lb" {
-  name                = "${var.cluster_prefix}frontend-lb"
-  location            = module.common.resource_group_location
-  resource_group_name = module.common.resource_group_name
-  sku                 = var.sku
+# resource "azurerm_lb" "frontend_lb" {
+#   name                = "${var.cluster_prefix}frontend-lb"
+#   location            = module.common.resource_group_location
+#   resource_group_name = module.common.resource_group_name
+#   sku                 = var.sku
 
-  frontend_ip_configuration {
-    name                 = "LoadBalancerFrontend"
-    public_ip_address_id = azurerm_public_ip.public_ip_lb.id
-  }
+#   frontend_ip_configuration {
+#     name                 = "LoadBalancerFrontend"
+#     public_ip_address_id = azurerm_public_ip.public_ip_lb.id
+#   }
 
-  tags = merge(lookup(var.tags, "load-balancer", {}), lookup(var.tags, "all", {}))
-}
+#   tags = merge(lookup(var.tags, "load-balancer", {}), lookup(var.tags, "all", {}))
+# }
 
 resource "azurerm_lb_backend_address_pool" "frontend_lb_pool" {
   loadbalancer_id = azurerm_lb.frontend_lb.id
